@@ -1,0 +1,24 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<urn:pg:1.0:Shape1> a sh:NodeShape ;
+    sh:property [ sh:datatype xsd:int ;
+            sh:path <urn:pg:1.0:born> ],
+        [ sh:datatype xsd:string ;
+            sh:path <urn:pg:1.0:name> ],
+        [ sh:node <urn:pg:1.0:Movie> ;
+            sh:path <urn:pg:1.0:ACTED_IN> ] ;
+    sh:targetClass <urn:pg:1.0:Person> .
+
+<urn:pg:1.0:Shape2> a sh:NodeShape ;
+    sh:property [ sh:datatype xsd:string ;
+            sh:path <urn:pg:1.0:title> ],
+        [ sh:datatype xsd:int ;
+            sh:path <urn:pg:1.0:realized> ] ;
+    sh:targetClass <urn:pg:1.0:Movie> .
+
+[] dcterms:created "2018-11-13"^^xsd:date ;
+    dcterms:creator "Dominik Tomaszuk" .
+
+
