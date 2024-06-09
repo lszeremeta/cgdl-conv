@@ -1,0 +1,10 @@
+attrs==21.4.0
+cbor==1.0.0
+click==8.1.7
+dicttoxml==1.7.16
+isodate==0.6.1
+pyparsing==3.1.2
+PyYAML==6.0.1
+qtoml==0.3.1
+rdflib==7.0.0
+six==1.16.0
