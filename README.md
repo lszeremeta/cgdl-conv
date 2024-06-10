@@ -45,4 +45,4 @@ Would you like to improve this project? Great! We are waiting for your help and 
 
 Distributed under [MIT license](https://github.com/lszeremeta/cgdl-conv/blob/main/LICENSE).
 
-The code, examples and this README were adapted from the [PGDL-conv](https://github.com/domel/PGDL-conv) by [Łukasz Szeremeta](https://github.com/lszeremeta) and [Dominik Tomaszuk](https://github.com/domel), distributed under the [MIT license](https://github.com/domel/PGDL-conv/blob/master/LICENSE).
+The code, examples and this README were adapted from the [PGDL-conv](https://github.com/domel/PGDL-conv) created by [Łukasz Szeremeta](https://github.com/lszeremeta) and [Dominik Tomaszuk](https://github.com/domel), distributed under the [MIT license](https://github.com/domel/PGDL-conv/blob/master/LICENSE).
