@@ -1,4 +1,4 @@
-# CGDL-conv
+# cgdl-conv
 
 Common Graph Definition Language converter for many other formats including [JSON](https://www.json.org/), [CBOR](http://cbor.io/) (binary JSON), [XML](https://www.w3.org/XML/), [TOML](https://github.com/toml-lang/), [YAML](https://yaml.org/) and (PG)[SHACL](https://www.w3.org/TR/shacl/). Written in [Python](https://www.python.org/) 3. Works from CLI.
 
