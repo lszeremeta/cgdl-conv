@@ -1,6 +1,6 @@
 # cgdl-conv
 
-Common Graph Definition Language converter for many other formats including [JSON](https://www.json.org/), [CBOR](http://cbor.io/) (binary JSON), [XML](https://www.w3.org/XML/), [TOML](https://github.com/toml-lang/), [YAML](https://yaml.org/) and (PG)[SHACL](https://www.w3.org/TR/shacl/). Written in [Python](https://www.python.org/) 3. Works from CLI.
+Common Graph Definition Language converter for many other formats including [JSON](https://www.json.org/), [CBOR](http://cbor.io/) (binary JSON), [XML](https://www.w3.org/XML/), [TOML](https://github.com/toml-lang/), [YAML](https://yaml.org/) and [SHACL](https://www.w3.org/TR/shacl/). Written in [Python](https://www.python.org/) 3. Works from CLI.
 
 For examples see [`examples` directory](https://github.com/lszeremeta/cgdl-conv/blob/main/examples).
 
@@ -32,7 +32,7 @@ usage: cgdl-conv.py [-h]
   -y, --yaml         display CGDL in compact YAML
   -c, --cgdl         display CGDL (in YAML)
   -g, --graphql      display GraphQL
-  -s, --shacl        display (PG)SHACL (in RDF)
+  -s, --shacl        display SHACL (in RDF)
 ```
 
 Available options may vary depending on the version. To display all available options with their descriptions use ``cgdl-conv.py -h``.

@@ -36,7 +36,7 @@ group.add_argument("-c", "--cgdl", help="display CGDL (in YAML)",
                     action="store_true")
 group.add_argument("-g", "--graphql", help="display GraphQL",
                     action="store_true")
-group.add_argument("-s", "--shacl", help="display (PG)SHACL (in RDF)",
+group.add_argument("-s", "--shacl", help="display SHACL (in RDF)",
                     action="store_true")
 
 args = parser.parse_args()
@@ -149,8 +149,6 @@ if args.file:
         sh = Namespace("http://www.w3.org/ns/shacl#")
         pg = Namespace("urn:pg:1.0:")
         xsd = Namespace("http://www.w3.org/2001/XMLSchema#")
-        pgsh = Namespace("http://ii.uwb.edu.pl/shpg#")
-        g.bind("shpg", pgsh)
 
         def set_datatype(f):
             return {
