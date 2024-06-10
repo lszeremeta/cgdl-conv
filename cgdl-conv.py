@@ -1,43 +1,32 @@
 #!/usr/bin/python3
 import argparse
 import json
-import cbor
 from xml.dom.minidom import parseString
-import qtoml
 
+import cbor
 import dicttoxml
+import qtoml
 import yaml
 from rdflib import Graph, Literal, BNode, Namespace, RDF, URIRef
 
 parser = argparse.ArgumentParser(description='Process CGDL documents.')
-parser.add_argument('file', type=str,
-                    help='a CGDL file')
+parser.add_argument('file', type=str, help='a CGDL file')
 
 group = parser.add_mutually_exclusive_group(required=True)
-group.add_argument("-m", "--metadata", help="display CGDL metadata",
-                    action="store_true")
-group.add_argument("-j", "--json", help="display CGDL in JSON",
-                    action="store_true")
-group.add_argument("-pj", "--prettyjson", help="display CGDL in pretty JSON",
-                    action="store_true")
-group.add_argument("-cb", "--cbor", help="display CGDL in CBOR (binary JSON)",
-                    action="store_true")
-group.add_argument("-x", "--xml", help="display CGDL in XML",
-                    action="store_true")
-group.add_argument("-px", "--prettyxml", help="display CGDL in pretty XML",
-                    action="store_true")
-group.add_argument("-t", "--toml", help="display TOML",
-                    action="store_true")
-group.add_argument("-y", "--yaml", help="display CGDL in compact YAML",
-                    action="store_true")
+group.add_argument("-m", "--metadata", help="display CGDL metadata", action="store_true")
+group.add_argument("-j", "--json", help="display CGDL in JSON", action="store_true")
+group.add_argument("-pj", "--prettyjson", help="display CGDL in pretty JSON", action="store_true")
+group.add_argument("-cb", "--cbor", help="display CGDL in CBOR (binary JSON)", action="store_true")
+group.add_argument("-x", "--xml", help="display CGDL in XML", action="store_true")
+group.add_argument("-px", "--prettyxml", help="display CGDL in pretty XML", action="store_true")
+group.add_argument("-t", "--toml", help="display TOML", action="store_true")
+group.add_argument("-y", "--yaml", help="display CGDL in compact YAML", action="store_true")
 # parser.add_argument("-py", "--prettyyaml", help="display CGDL in compact YAML",
 #                     action="store_true")
-group.add_argument("-c", "--cgdl", help="display CGDL (in YAML)",
-                    action="store_true")
-group.add_argument("-g", "--graphql", help="display GraphQL",
-                    action="store_true")
-group.add_argument("-s", "--shacl", help="display SHACL (in RDF)",
-                    action="store_true")
+group.add_argument("-c", "--cgdl", help="display CGDL (in YAML)", action="store_true")
+group.add_argument("-g", "--graphql", help="display GraphQL", action="store_true")
+group.add_argument("-s", "--shacl", help="display SHACL (in RDF, Turtle)", action="store_true")
+group.add_argument("-sx", "--shex", help="display ShEx", action="store_true")
 
 args = parser.parse_args()
 
@@ -89,6 +78,7 @@ if args.file:
         print(raw)
     if args.graphql:
         indentation = '  '
+
 
         def set_datatype(f):
             if f == 'string':
@@ -150,19 +140,12 @@ if args.file:
         pg = Namespace("urn:pg:1.0:")
         xsd = Namespace("http://www.w3.org/2001/XMLSchema#")
 
+
         def set_datatype(f):
-            return {
-                'string': xsd.string,
-                'int': xsd.int,
-                'integer': xsd.integer,
-                'boolean': xsd.boolean,
-                'decimal': xsd.decimal,
-                'float': xsd.float,
-                'double': xsd.double,
-                'dateTime': xsd.dateTime,
-                'time': xsd.time,
-                'date': xsd.date,
-            }.get(f)
+            return {'string': xsd.string, 'int': xsd.int, 'integer': xsd.integer, 'boolean': xsd.boolean,
+                    'decimal': xsd.decimal, 'float': xsd.float, 'double': xsd.double, 'dateTime': xsd.dateTime,
+                    'time': xsd.time, 'date': xsd.date, }.get(f)
+
 
         try:
             created = data['metadata']['created']
@@ -212,6 +195,16 @@ if args.file:
                         print(f'# There is no information about edge: {e}')
 
         print(g.serialize(format='turtle'))
-        
+    if args.shex:
+        shex_str = ""
+        for shape in data.get('shapes', []):
+            shex_str += f"<{shape['target']}> {{\n"
+            for pred in shape.get('predicates', []):
+                if 'datatype' in pred:
+                    shex_str += f"  {pred['name']} xsd:{pred['datatype']} ;\n"
+                elif 'node' in pred:
+                    shex_str += f"  {pred['name']} @<{pred['node']}> ;\n"
+            shex_str += "}\n"
+        print(shex_str)
 else:
     parser.print_help()
