@@ -27,6 +27,7 @@ group.add_argument("-c", "--cgdl", help="display CGDL (in YAML)", action="store_
 group.add_argument("-g", "--graphql", help="display GraphQL", action="store_true")
 group.add_argument("-s", "--shacl", help="display SHACL (in RDF, Turtle)", action="store_true")
 group.add_argument("-sx", "--shex", help="display ShEx", action="store_true")
+group.add_argument("-p", "--pgschema", help="display PG-Schema", action="store_true")
 
 args = parser.parse_args()
 
@@ -196,15 +197,40 @@ if args.file:
 
         print(g.serialize(format='turtle'))
     if args.shex:
-        shex_str = ""
         for shape in data.get('shapes', []):
-            shex_str += f"<{shape['target']}> {{\n"
+            print(f"<{shape['target']}> {{")
             for pred in shape.get('predicates', []):
                 if 'datatype' in pred:
-                    shex_str += f"  {pred['name']} xsd:{pred['datatype']} ;\n"
+                    print(f"  {pred['name']} xsd:{pred['datatype']} ;")
                 elif 'node' in pred:
-                    shex_str += f"  {pred['name']} @<{pred['node']}> ;\n"
-            shex_str += "}\n"
-        print(shex_str)
+                    print(f"  {pred['name']} @<{pred['node']}> ;")
+            print("}")
+    if args.pgschema:
+        for shape in data.get('shapes', []):
+            target_node = shape.get('target')
+            if target_node:
+                node_properties = []
+                for predicate in shape.get('predicates', []):
+                    property_name = predicate.get('name')
+                    if 'datatype' in predicate:
+                        property_datatype = predicate.get('datatype')
+                        node_properties.append(f"{property_name} {property_datatype.upper()}")
+                if node_properties:
+                    formatted_properties = ", ".join(node_properties)
+                    print(f"CREATE NODE TYPE ({target_node}Type: {target_node} {{{formatted_properties}}})")
+                else:
+                    print(f"CREATE NODE TYPE ({target_node}Type: {target_node})")
+
+        for shape in data.get('shapes', []):
+            source_node = shape.get('target')
+            if source_node:
+                for predicate in shape.get('predicates', []):
+                    if 'node' in predicate:
+                        edge_name = predicate.get('name')
+                        target_node = predicate.get('node')
+                        edge_type_name = edge_name.replace("_", "") + "Type"
+                        print(
+                            f"CREATE EDGE TYPE (:{source_node}Type)-[{edge_type_name}: {edge_name}]->(:{target_node}Type)")
+
 else:
     parser.print_help()

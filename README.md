@@ -1,6 +1,10 @@
 # cgdl-conv
 
-Common Graph Definition Language converter for many other formats including [JSON](https://www.json.org/), [CBOR](http://cbor.io/) (binary JSON), [XML](https://www.w3.org/XML/), [TOML](https://github.com/toml-lang/), [YAML](https://yaml.org/), [SHACL](https://www.w3.org/TR/shacl/) and [ShEx](https://shex.io/shex-primer/). Written in [Python](https://www.python.org/) 3. Works from CLI.
+Common Graph Definition Language converter for many other formats
+including [JSON](https://www.json.org/), [CBOR](http://cbor.io/) (binary
+JSON), [XML](https://www.w3.org/XML/), [TOML](https://github.com/toml-lang/), [YAML](https://yaml.org/), [SHACL](https://www.w3.org/TR/shacl/), [ShEx](https://shex.io/shex-primer/)
+and [PG-Schema](https://dl.acm.org/doi/abs/10.1145/3589778). Written in [Python](https://www.python.org/) 3. Works from
+CLI.
 
 For examples see [`examples` directory](https://github.com/lszeremeta/cgdl-conv/blob/main/examples).
 
@@ -8,7 +12,7 @@ For examples see [`examples` directory](https://github.com/lszeremeta/cgdl-conv/
 
 ```shell
 usage: cgdl-conv.py [-h]
-                    (-m | -j | -pj | -cb | -x | -px | -t | -y | -c | -g | -s | -sx)
+                    (-m | -j | -pj | -cb | -x | -px | -t | -y | -c | -g | -s | -sx | -p)
                     file
 ```
 
@@ -34,16 +38,21 @@ usage: cgdl-conv.py [-h]
   -g, --graphql      display GraphQL
   -s, --shacl        display SHACL (in RDF, Turtle)
   -sx, --shex        display ShEx
+  -p, --pgschema     display PG-Schema
 ```
 
-Available options may vary depending on the version. To display all available options with their descriptions use ``cgdl-conv.py -h``.
+Available options may vary depending on the version. To display all available options with their descriptions
+use ``cgdl-conv.py -h``.
 
 ## Contribution
 
-Would you like to improve this project? Great! We are waiting for your help and suggestions. If you are new to open source contributions, read [How to Contribute to Open Source](https://opensource.guide/how-to-contribute/).
+Would you like to improve this project? Great! We are waiting for your help and suggestions. If you are new to open
+source contributions, read [How to Contribute to Open Source](https://opensource.guide/how-to-contribute/).
 
 ## License
 
 Distributed under [MIT license](https://github.com/lszeremeta/cgdl-conv/blob/main/LICENSE).
 
-The code, examples and this README were adapted from the [PGDL-conv](https://github.com/domel/PGDL-conv) created by [Łukasz Szeremeta](https://github.com/lszeremeta) and [Dominik Tomaszuk](https://github.com/domel), distributed under the [MIT license](https://github.com/domel/PGDL-conv/blob/master/LICENSE).
+The code, examples and this README were adapted from the [PGDL-conv](https://github.com/domel/PGDL-conv) created
+by [Łukasz Szeremeta](https://github.com/lszeremeta) and [Dominik Tomaszuk](https://github.com/domel), distributed under
+the [MIT license](https://github.com/domel/PGDL-conv/blob/master/LICENSE).
