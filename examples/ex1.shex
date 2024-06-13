@@ -5,6 +5,5 @@
 }
 <Movie> {
   title xsd:string ;
-  realized xsd:int ;
+  released xsd:int ;
 }
-
