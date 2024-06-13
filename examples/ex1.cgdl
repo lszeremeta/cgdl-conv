@@ -1,23 +1,20 @@
 metadata:
-  created: '2018-11-13' # bla
-  creator: "Dominik Tomaszuk"
-shapes: 
-  - target: Person #targetClass -> target
-    predicates: 
-      - cardinality: 1
+  created: '2018-11-13'
+  creator: Dominik Tomaszuk
+shapes:
+  - target: Person
+    predicates:
+      - name: name
+        cardinality: 1
         datatype: string
-        name: name
-      - datatype: int   # datetype = property in PDGL
-        name: born
+      - name: born
+        datatype: int
       - name: ACTED_IN
-        node: Movie     # node = edge in PDGL
-      # min-lenght and so on from Shacl specs
-  - target: Movie #targetClass -> target
-    predicates: 
-      - cardinality: 1
+        node: Movie
+  - target: Movie
+    predicates:
+      - name: title
+        cardinality: 1
         datatype: string
-        name: title
-      - datatype: int
-        name: realized
-
-# CGDL -> Shacl, PGschema, Shex
+      - name: released
+        datatype: int
