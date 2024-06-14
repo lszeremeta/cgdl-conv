@@ -1,0 +1,3 @@
+CREATE NODE TYPE (PersonType: Person {name STRING, born INT})
+CREATE NODE TYPE (MovieType: Movie {title STRING, released INT})
+CREATE EDGE TYPE (:PersonType)-[ACTEDINType: ACTED_IN]->(:MovieType)
