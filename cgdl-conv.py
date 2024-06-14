@@ -138,7 +138,7 @@ if args.file:
         doc = BNode()
         dct = Namespace("http://purl.org/dc/terms/")
         sh = Namespace("http://www.w3.org/ns/shacl#")
-        pg = Namespace("urn:pg:1.0:")
+        pg = Namespace("urn:cgdl:1.0:")
         xsd = Namespace("http://www.w3.org/2001/XMLSchema#")
 
 
@@ -166,9 +166,9 @@ if args.file:
             shape_counter += 1
             try:
                 tn1 = shape['target']
-                shape_ref = URIRef(f"urn:pg:1.0:{shape_id}")
+                shape_ref = URIRef(f"urn:cgdl:1.0:{shape_id}")
                 g.add((shape_ref, RDF.type, sh.NodeShape))
-                g.add((shape_ref, sh.targetClass, URIRef("urn:pg:1.0:" + tn1)))
+                g.add((shape_ref, sh.targetClass, URIRef("urn:cgdl:1.0:" + tn1)))
             except KeyError:
                 print('# There is no information about target node')
 
@@ -178,7 +178,7 @@ if args.file:
                     try:
                         pn1 = predicate['name']
                         g.add((shape_ref, sh.property, prop))
-                        g.add((prop, sh.path, URIRef("urn:pg:1.0:" + pn1)))
+                        g.add((prop, sh.path, URIRef("urn:cgdl:1.0:" + pn1)))
                         pdt1 = set_datatype(predicate.get('datatype'))
                         if pdt1:
                             g.add((prop, sh.datatype, pdt1))
@@ -189,21 +189,22 @@ if args.file:
                     try:
                         pp1 = predicate['name']
                         g.add((shape_ref, sh.property, prop2))
-                        g.add((prop2, sh.path, URIRef("urn:pg:1.0:" + pp1)))
+                        g.add((prop2, sh.path, URIRef("urn:cgdl:1.0:" + pp1)))
                         pnd1 = predicate['node']
-                        g.add((prop2, sh.node, URIRef("urn:pg:1.0:" + pnd1)))
+                        g.add((prop2, sh.node, URIRef("urn:cgdl:1.0:" + pnd1)))
                     except KeyError as e:
                         print(f'# There is no information about edge: {e}')
 
         print(g.serialize(format='turtle'))
     if args.shex:
+        print('PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>')
         for shape in data.get('shapes', []):
-            print(f"<{shape['target']}> {{")
+            print(f"<urn:cgdl:1.0:{shape['target']}> {{")
             for pred in shape.get('predicates', []):
                 if 'datatype' in pred:
                     print(f"  {pred['name']} xsd:{pred['datatype']} ;")
                 elif 'node' in pred:
-                    print(f"  {pred['name']} @<{pred['node']}> ;")
+                    print(f"  {pred['name']} @<urn:cgdl:1.0:{pred['node']}> ;")
             print("}")
     if args.pgschema:
         for shape in data.get('shapes', []):
