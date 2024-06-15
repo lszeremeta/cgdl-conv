@@ -1,9 +1,10 @@
-<Person> {
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+<urn:cgdl:1.0:Person> {
   name xsd:string ;
   born xsd:int ;
-  ACTED_IN @<Movie> ;
+  ACTED_IN @<urn:cgdl:1.0:Movie> ;
 }
-<Movie> {
+<urn:cgdl:1.0:Movie> {
   title xsd:string ;
   released xsd:int ;
 }
