@@ -141,12 +141,10 @@ if args.file:
         pg = Namespace("urn:cgdl:1.0:")
         xsd = Namespace("http://www.w3.org/2001/XMLSchema#")
 
-
         def set_datatype(f):
             return {'string': xsd.string, 'int': xsd.int, 'integer': xsd.integer, 'boolean': xsd.boolean,
                     'decimal': xsd.decimal, 'float': xsd.float, 'double': xsd.double, 'dateTime': xsd.dateTime,
                     'time': xsd.time, 'date': xsd.date, }.get(f)
-
 
         try:
             created = data['metadata']['created']
@@ -160,13 +158,10 @@ if args.file:
         except KeyError:
             print('# There is no information about creator')
 
-        shape_counter = 1
         for shape in data.get('shapes', []):
-            shape_id = f"Shape{shape_counter}"
-            shape_counter += 1
             try:
                 tn1 = shape['target']
-                shape_ref = URIRef(f"urn:cgdl:1.0:{shape_id}")
+                shape_ref = URIRef(f"urn:cgdl:1.0:{tn1}Shape")
                 g.add((shape_ref, RDF.type, sh.NodeShape))
                 g.add((shape_ref, sh.targetClass, URIRef("urn:cgdl:1.0:" + tn1)))
             except KeyError:
