@@ -1,0 +1,38 @@
+# There is no information about creator
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<urn:cgdl:1.0:CityShape> a sh:NodeShape ;
+    sh:property [ sh:datatype xsd:int ;
+            sh:path <urn:cgdl:1.0:population> ] ;
+    sh:targetClass <urn:cgdl:1.0:City> .
+
+<urn:cgdl:1.0:EmployeeShape> a sh:NodeShape ;
+    sh:property [ sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:node <urn:cgdl:1.0:Manager> ;
+            sh:path <urn:cgdl:1.0:reportsTo> ] ;
+    sh:targetClass <urn:cgdl:1.0:Employee> .
+
+<urn:cgdl:1.0:PaperShape> a sh:NodeShape ;
+    sh:property [ sh:minCount 1 ;
+            sh:node <urn:cgdl:1.0:Paper> ;
+            sh:path <urn:cgdl:1.0:citedBy> ],
+        [ sh:minCount 2 ;
+            sh:node <urn:cgdl:1.0:Paper> ;
+            sh:path <urn:cgdl:1.0:cites> ] ;
+    sh:targetClass <urn:cgdl:1.0:Paper> .
+
+<urn:cgdl:1.0:ProjectShape> a sh:NodeShape ;
+    sh:property [ sh:datatype xsd:date ;
+            sh:path <urn:cgdl:1.0:endDate> ],
+        [ sh:datatype xsd:string ;
+            sh:path <urn:cgdl:1.0:projectName> ],
+        [ sh:datatype xsd:date ;
+            sh:path <urn:cgdl:1.0:startDate> ] ;
+    sh:targetClass <urn:cgdl:1.0:Project> .
+
+[] dcterms:created "2024-06-21"^^xsd:date .
+
+

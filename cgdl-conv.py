@@ -121,14 +121,17 @@ if args.file:
                         pn1 = predicate['name']
                         pdt1 = predicate['datatype']
                         pdt1 = set_datatype(pdt1)
-                        print(indentation + pn1 + ': ' + pdt1 + '!')
+                        cardinality = predicate.get('cardinality', '!')
+                        print(indentation + pn1 + ': ' + pdt1 + cardinality)
                     except:
                         print(indentation + '# There is no information about property name or data type')
                 else:
                     try:
                         pp1 = predicate['name']
                         pnd1 = predicate['node']
-                        print_edge_details(pnd1)
+                        min_count = predicate.get('minCount', '')
+                        max_count = predicate.get('maxCount', '')
+                        print(indentation + pp1 + ': [' + pnd1 + ']' + '{' + str(min_count) + ',' + str(max_count) + '}')
                     except:
                         print(indentation + '# Error while printing edge details')
 
@@ -177,6 +180,9 @@ if args.file:
                         pdt1 = set_datatype(predicate.get('datatype'))
                         if pdt1:
                             g.add((prop, sh.datatype, pdt1))
+                        if 'cardinality' in predicate:
+                            g.add((prop, sh.minCount, Literal(predicate['cardinality'], datatype=xsd.integer)))
+                            g.add((prop, sh.maxCount, Literal(predicate['cardinality'], datatype=xsd.integer)))
                     except KeyError as e:
                         print(f'# There is no information about property: {e}')
                 else:
@@ -187,6 +193,10 @@ if args.file:
                         g.add((prop2, sh.path, URIRef("urn:cgdl:1.0:" + pp1)))
                         pnd1 = predicate['node']
                         g.add((prop2, sh.node, URIRef("urn:cgdl:1.0:" + pnd1)))
+                        if 'minCount' in predicate:
+                            g.add((prop2, sh.minCount, Literal(predicate['minCount'], datatype=xsd.integer)))
+                        if 'maxCount' in predicate:
+                            g.add((prop2, sh.maxCount, Literal(predicate['maxCount'], datatype=xsd.integer)))
                     except KeyError as e:
                         print(f'# There is no information about edge: {e}')
 
@@ -197,11 +207,15 @@ if args.file:
             print(f"<urn:cgdl:1.0:{shape['target']}> {{")
             for pred in shape.get('predicates', []):
                 if 'datatype' in pred:
-                    print(f"  {pred['name']} xsd:{pred['datatype']} ;")
+                    cardinality = pred.get('cardinality', '')
+                    print(f"  {pred['name']} xsd:{pred['datatype']} {cardinality};")
                 elif 'node' in pred:
-                    print(f"  {pred['name']} @<urn:cgdl:1.0:{pred['node']}> ;")
+                    min_count = pred.get('minCount', '')
+                    max_count = pred.get('maxCount', '')
+                    print(f"  {pred['name']} @<urn:cgdl:1.0:{pred['node']}> {{{min_count},{max_count}}};")
             print("}")
     if args.pgschema:
+        # TODO: Add cardinalities support for PG-Schema
         for shape in data.get('shapes', []):
             target_node = shape.get('target')
             if target_node:

@@ -1,0 +1,7 @@
+CREATE NODE TYPE (CityType: City {population INT})
+CREATE NODE TYPE (EmployeeType: Employee)
+CREATE NODE TYPE (PaperType: Paper)
+CREATE NODE TYPE (ProjectType: Project {projectName STRING, startDate DATE, endDate DATE})
+CREATE EDGE TYPE (:EmployeeType)-[reportsToType: reportsTo]->(:ManagerType)
+CREATE EDGE TYPE (:PaperType)-[citesType: cites]->(:PaperType)
+CREATE EDGE TYPE (:PaperType)-[citedByType: citedBy]->(:PaperType)

@@ -1,0 +1,16 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+<urn:cgdl:1.0:City> {
+  population xsd:int ;
+}
+<urn:cgdl:1.0:Employee> {
+  reportsTo @<urn:cgdl:1.0:Manager> {1,1};
+}
+<urn:cgdl:1.0:Paper> {
+  cites @<urn:cgdl:1.0:Paper> {2,};
+  citedBy @<urn:cgdl:1.0:Paper> {1,};
+}
+<urn:cgdl:1.0:Project> {
+  projectName xsd:string ;
+  startDate xsd:date ;
+  endDate xsd:date ;
+}

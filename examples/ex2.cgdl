@@ -1,0 +1,33 @@
+metadata:
+  created: '2024-06-21'
+shapes:
+  - target: City
+    predicates:
+      - name: population
+        datatype: int
+        minInclusive: 1
+  - target: Employee
+    predicates:
+      - name: reportsTo
+        node: Manager
+        minCount: 1
+        maxCount: 1
+  - target: Paper
+    predicates:
+      - name: cites
+        node: Paper
+        minCount: 2
+      - name: citedBy
+        node: Paper
+        minCount: 1
+  - target: Project
+    closed: true
+    ignoredProperties:
+      - rdf:type
+    predicates:
+      - name: projectName
+        datatype: string
+      - name: startDate
+        datatype: date
+      - name: endDate
+        datatype: date
