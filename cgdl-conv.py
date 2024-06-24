@@ -202,17 +202,21 @@ if args.file:
 
         print(g.serialize(format='turtle'))
     if args.shex:
+        print('PREFIX ex: <http://example.org/>')
         print('PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>')
         for shape in data.get('shapes', []):
-            print(f"<urn:cgdl:1.0:{shape['target']}> {{")
+            print(f"ex:{shape['target']} {{")
             for pred in shape.get('predicates', []):
                 if 'datatype' in pred:
                     cardinality = pred.get('cardinality', '')
-                    print(f"  {pred['name']} xsd:{pred['datatype']} {cardinality};")
+                    if cardinality:
+                        cardinality = f"{{{cardinality}}}"
+                    print(f"  ex:{pred['name']} xsd:{pred['datatype']} {cardinality};")
                 elif 'node' in pred:
                     min_count = pred.get('minCount', '')
                     max_count = pred.get('maxCount', '')
-                    print(f"  {pred['name']} @<urn:cgdl:1.0:{pred['node']}> {{{min_count},{max_count}}};")
+                    cardinality = f"{{{min_count},{max_count}}}" if min_count or max_count else ''
+                    print(f"  ex:{pred['name']} @ex:{pred['node']} {cardinality};")
             print("}")
     if args.pgschema:
         # TODO: Add cardinalities support for PG-Schema

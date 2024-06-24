@@ -1,10 +1,11 @@
+PREFIX ex: <http://example.org/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-<urn:cgdl:1.0:Person> {
-  name xsd:string ;
-  born xsd:int ;
-  ACTED_IN @<urn:cgdl:1.0:Movie> ;
+ex:Person {
+  ex:name xsd:string {1};
+  ex:born xsd:int ;
+  ex:ACTED_IN @ex:Movie ;
 }
-<urn:cgdl:1.0:Movie> {
-  title xsd:string ;
-  released xsd:int ;
+ex:Movie {
+  ex:title xsd:string {1};
+  ex:released xsd:int ;
 }
