@@ -1,5 +1,6 @@
 metadata:
   created: '2024-06-21'
+  lastModified: '2024-06-28'
 shapes:
   - target: City
     predicates:
@@ -12,6 +13,11 @@ shapes:
         node: Manager
         minCount: 1
         maxCount: 1
+  - target: Manager
+    predicates:
+      - name: manages
+        node: Employee
+        minCount: 1
   - target: Paper
     predicates:
       - name: cites
@@ -22,8 +28,8 @@ shapes:
         minCount: 1
   - target: Project
     closed: true
-    ignoredProperties:
-      - rdf:type
+    ignoredPredicates:
+      - '@type'
     predicates:
       - name: projectName
         datatype: string

@@ -15,13 +15,19 @@
             sh:path <urn:cgdl:1.0:reportsTo> ] ;
     sh:targetClass <urn:cgdl:1.0:Employee> .
 
-<urn:cgdl:1.0:PaperShape> a sh:NodeShape ;
+<urn:cgdl:1.0:ManagerShape> a sh:NodeShape ;
     sh:property [ sh:minCount 1 ;
+            sh:node <urn:cgdl:1.0:Employee> ;
+            sh:path <urn:cgdl:1.0:manages> ] ;
+    sh:targetClass <urn:cgdl:1.0:Manager> .
+
+<urn:cgdl:1.0:PaperShape> a sh:NodeShape ;
+    sh:property [ sh:minCount 2 ;
             sh:node <urn:cgdl:1.0:Paper> ;
-            sh:path <urn:cgdl:1.0:citedBy> ],
-        [ sh:minCount 2 ;
+            sh:path <urn:cgdl:1.0:cites> ],
+        [ sh:minCount 1 ;
             sh:node <urn:cgdl:1.0:Paper> ;
-            sh:path <urn:cgdl:1.0:cites> ] ;
+            sh:path <urn:cgdl:1.0:citedBy> ] ;
     sh:targetClass <urn:cgdl:1.0:Paper> .
 
 <urn:cgdl:1.0:ProjectShape> a sh:NodeShape ;

@@ -6,6 +6,9 @@ ex:City {
 ex:Employee {
   ex:reportsTo @ex:Manager {1,1};
 }
+ex:Manager {
+  ex:manages @ex:Employee {1,};
+}
 ex:Paper {
   ex:cites @ex:Paper {2,};
   ex:citedBy @ex:Paper {1,};
