@@ -1,3 +1,9 @@
 CREATE NODE TYPE (PersonType: Person {name STRING, born INT})
 CREATE NODE TYPE (MovieType: Movie {title STRING, released INT})
 CREATE EDGE TYPE (:PersonType)-[ACTEDINType: ACTED_IN]->(:MovieType)
+FOR (c: PersonType)
+COUNT 0.. OF t WITHIN (c)-[:ACTED_IN]->(t: MovieType).
+FOR (c: PersonType)
+COUNT 1 OF c.name.
+FOR (c: MovieType)
+COUNT 1 OF c.title.

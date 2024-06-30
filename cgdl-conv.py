@@ -219,7 +219,6 @@ if args.file:
                     print(f"  ex:{pred['name']} @ex:{pred['node']} {cardinality};")
             print("}")
     if args.pgschema:
-        # TODO: Add cardinalities support for PG-Schema
         for shape in data.get('shapes', []):
             target_node = shape.get('target')
             if target_node:
@@ -243,8 +242,34 @@ if args.file:
                         edge_name = predicate.get('name')
                         target_node = predicate.get('node')
                         edge_type_name = edge_name.replace("_", "") + "Type"
-                        print(
-                            f"CREATE EDGE TYPE (:{source_node}Type)-[{edge_type_name}: {edge_name}]->(:{target_node}Type)")
+                        print(f"CREATE EDGE TYPE (:{source_node}Type)-[{edge_type_name}: {edge_name}]->(:{target_node}Type)")
+
+        for shape in data.get('shapes', []):
+            source_node = shape.get('target')
+            if source_node:
+                for predicate in shape.get('predicates', []):
+                    if 'node' in predicate:
+                        edge_name = predicate.get('name')
+                        target_node = predicate.get('node')
+                        min_count = predicate.get('minCount', 0)
+                        max_count = predicate.get('maxCount', '')
+                        
+                        cardinality = f"{min_count}..{max_count}" if max_count else f"{min_count}.."
+                        
+                        print(f"FOR (c: {source_node}Type)")
+                        print(f"COUNT {cardinality} OF t WITHIN (c)-[:{edge_name}]->(t: {target_node}Type).")
+
+        for shape in data.get('shapes', []):
+            source_node = shape.get('target')
+            if source_node:
+                for predicate in shape.get('predicates', []):
+                    if 'datatype' in predicate:
+                        property_name = predicate.get('name')
+                        cardinality = predicate.get('cardinality')
+                        
+                        if cardinality:
+                            print(f"FOR (c: {source_node}Type)")
+                            print(f"COUNT {cardinality} OF c.{property_name}.")
 
 else:
     parser.print_help()

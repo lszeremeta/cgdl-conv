@@ -7,3 +7,11 @@ CREATE EDGE TYPE (:EmployeeType)-[reportsToType: reportsTo]->(:ManagerType)
 CREATE EDGE TYPE (:ManagerType)-[managesType: manages]->(:EmployeeType)
 CREATE EDGE TYPE (:PaperType)-[citesType: cites]->(:PaperType)
 CREATE EDGE TYPE (:PaperType)-[citedByType: citedBy]->(:PaperType)
+FOR (c: EmployeeType)
+COUNT 1..1 OF t WITHIN (c)-[:reportsTo]->(t: ManagerType).
+FOR (c: ManagerType)
+COUNT 1.. OF t WITHIN (c)-[:manages]->(t: EmployeeType).
+FOR (c: PaperType)
+COUNT 2.. OF t WITHIN (c)-[:cites]->(t: PaperType).
+FOR (c: PaperType)
+COUNT 1.. OF t WITHIN (c)-[:citedBy]->(t: PaperType).
