@@ -6,7 +6,7 @@ shapes:
     predicates:
       - name: population
         datatype: int
-        minInclusive: 1
+        minCount: 1
   - target: Employee
     predicates:
       - name: reportsTo
