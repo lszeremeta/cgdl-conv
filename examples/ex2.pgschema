@@ -15,3 +15,11 @@ FOR (c: PaperType)
 COUNT 2.. OF t WITHIN (c)-[:cites]->(t: PaperType).
 FOR (c: PaperType)
 COUNT 1.. OF t WITHIN (c)-[:citedBy]->(t: PaperType).
+FOR (c: CityType)
+COUNT 1 OF c.population.
+FOR (c: ProjectType)
+COUNT 1 OF c.projectName.
+FOR (c: ProjectType)
+COUNT 1 OF c.startDate.
+FOR (c: ProjectType)
+COUNT 1 OF c.endDate.

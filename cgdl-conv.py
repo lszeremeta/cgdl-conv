@@ -250,7 +250,7 @@ if args.file:
                     if 'node' in predicate:
                         edge_name = predicate.get('name')
                         target_node = predicate.get('node')
-                        min_count = predicate.get('minCount', 0)
+                        min_count = predicate.get('minCount', 1)
                         max_count = predicate.get('maxCount', '')
                         
                         cardinality = f"{min_count}..{max_count}" if max_count else f"{min_count}.."
@@ -264,9 +264,12 @@ if args.file:
                 for predicate in shape.get('predicates', []):
                     if 'datatype' in predicate:
                         property_name = predicate.get('name')
-                        cardinality = predicate.get('cardinality')
+                        cardinality = predicate.get('cardinality', 1)
+                        min_count = predicate.get('minCount', cardinality)
+                        max_count = predicate.get('maxCount', cardinality)
                         
-                        if cardinality:
+                        if min_count or max_count:
+                            cardinality = f"{min_count}..{max_count}" if max_count != min_count else f"{min_count}"
                             print(f"FOR (c: {source_node}Type)")
                             print(f"COUNT {cardinality} OF c.{property_name}.")
 
