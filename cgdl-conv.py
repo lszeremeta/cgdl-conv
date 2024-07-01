@@ -80,62 +80,54 @@ if args.file:
     if args.graphql:
         indentation = '  '
 
-
         def set_datatype(f):
-            if f == 'string':
-                return 'String'
-            elif f == 'int':
-                return 'Int'
-            elif f == 'integer':
-                return 'Int'
-            elif f == 'boolean':
-                return 'Boolean'
-            elif f == 'decimal':
-                return 'Float'
-            elif f == 'float':
-                return 'Float'
-            elif f == 'double':
-                return 'Float'
-            elif f == 'dateTime':
-                return 'String'
-            elif f == 'time':
-                return 'String'
-            elif f == 'date':
-                return 'String'
-
-
-        def print_edge_details(pnd):
-            print(indentation + pnd.lower() + 's: [' + pnd + ']')
-
+            return {
+                'string': 'String',
+                'int': 'Int',
+                'integer': 'Int',
+                'boolean': 'Boolean',
+                'decimal': 'Float',
+                'float': 'Float',
+                'double': 'Float',
+                'dateTime': 'String',
+                'time': 'String',
+                'date': 'String'
+            }.get(f, 'String')
 
         for shape in data.get('shapes', []):
-            try:
-                tn1 = shape['target']
-                print('type ' + tn1 + ' {')
-            except:
-                print('# There is no information about target node')
-
+            print(f"type {shape['target']} {{")
             for predicate in shape.get('predicates', []):
                 if 'datatype' in predicate:
-                    try:
-                        pn1 = predicate['name']
-                        pdt1 = predicate['datatype']
-                        pdt1 = set_datatype(pdt1)
-                        cardinality = predicate.get('cardinality', '!')
-                        print(indentation + pn1 + ': ' + pdt1 + cardinality)
-                    except:
-                        print(indentation + '# There is no information about property name or data type')
-                else:
-                    try:
-                        pp1 = predicate['name']
-                        pnd1 = predicate['node']
-                        min_count = predicate.get('minCount', '')
+                    pn1 = predicate['name']
+                    pdt1 = set_datatype(predicate['datatype'])
+                    cardinality = ''
+                    if 'minCount' in predicate or 'maxCount' in predicate:
+                        min_count = predicate.get('minCount', 0)
                         max_count = predicate.get('maxCount', '')
-                        print(indentation + pp1 + ': [' + pnd1 + ']' + '{' + str(min_count) + ',' + str(max_count) + '}')
-                    except:
-                        print(indentation + '# Error while printing edge details')
-
-            print('}\n')
+                        if min_count == 0:
+                            cardinality = ''
+                        elif min_count == 1 and not max_count:
+                            cardinality = '!'
+                        else:
+                            cardinality = '!'  # Required by default
+                    elif 'cardinality' in predicate:
+                        cardinality = '!' if predicate['cardinality'] > 0 else ''
+                    print(f"{indentation}{pn1}: {pdt1}{cardinality}")
+                else:
+                    pp1 = predicate['name']
+                    pnd1 = predicate['node']
+                    cardinality = ''
+                    if 'minCount' in predicate or 'maxCount' in predicate:
+                        min_count = predicate.get('minCount', 0)
+                        max_count = predicate.get('maxCount', '')
+                        if min_count == 0 and not max_count:
+                            cardinality = ''
+                        elif min_count == 1 and max_count == 1:
+                            cardinality = '!'
+                        else:
+                            cardinality = '!'  # Required by default
+                    print(f"{indentation}{pp1}: [{pnd1}]{cardinality}")
+            print("}\n")
     if args.shacl:
         g = Graph()
         doc = BNode()
@@ -183,6 +175,10 @@ if args.file:
                         if 'cardinality' in predicate:
                             g.add((prop, sh.minCount, Literal(predicate['cardinality'], datatype=xsd.integer)))
                             g.add((prop, sh.maxCount, Literal(predicate['cardinality'], datatype=xsd.integer)))
+                        elif 'minCount' in predicate:
+                            g.add((prop, sh.minCount, Literal(predicate['minCount'], datatype=xsd.integer)))
+                        if 'maxCount' in predicate:
+                            g.add((prop, sh.maxCount, Literal(predicate['maxCount'], datatype=xsd.integer)))
                     except KeyError as e:
                         print(f'# There is no information about property: {e}')
                 else:
@@ -208,14 +204,19 @@ if args.file:
             print(f"ex:{shape['target']} {{")
             for pred in shape.get('predicates', []):
                 if 'datatype' in pred:
-                    cardinality = pred.get('cardinality', '')
-                    if cardinality:
-                        cardinality = f"{{{cardinality}}}"
-                    print(f"  ex:{pred['name']} xsd:{pred['datatype']} {cardinality};")
+                    datatype = f"xsd:{pred['datatype']}"
+                    cardinality = ''
+                    if 'minCount' in pred or 'maxCount' in pred:
+                        min_count = pred.get('minCount', '')
+                        max_count = pred.get('maxCount', '')
+                        cardinality = f"{{{min_count or ''},{max_count or ''}}}"
+                    elif 'cardinality' in pred:
+                        cardinality = f"{{{pred['cardinality']}}}"
+                    print(f"  ex:{pred['name']} {datatype} {cardinality};")
                 elif 'node' in pred:
                     min_count = pred.get('minCount', '')
                     max_count = pred.get('maxCount', '')
-                    cardinality = f"{{{min_count},{max_count}}}" if min_count or max_count else ''
+                    cardinality = f"{{{min_count or ''},{max_count or ''}}}"
                     print(f"  ex:{pred['name']} @ex:{pred['node']} {cardinality};")
             print("}")
     if args.pgschema:

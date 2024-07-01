@@ -3,7 +3,7 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 ex:Person {
   ex:name xsd:string {1};
   ex:born xsd:int ;
-  ex:ACTED_IN @ex:Movie ;
+  ex:ACTED_IN @ex:Movie {,};
 }
 ex:Movie {
   ex:title xsd:string {1};

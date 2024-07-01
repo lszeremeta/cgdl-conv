@@ -5,6 +5,7 @@
 
 <urn:cgdl:1.0:CityShape> a sh:NodeShape ;
     sh:property [ sh:datatype xsd:int ;
+            sh:minCount 1 ;
             sh:path <urn:cgdl:1.0:population> ] ;
     sh:targetClass <urn:cgdl:1.0:City> .
 
@@ -32,11 +33,11 @@
 
 <urn:cgdl:1.0:ProjectShape> a sh:NodeShape ;
     sh:property [ sh:datatype xsd:date ;
+            sh:path <urn:cgdl:1.0:startDate> ],
+        [ sh:datatype xsd:date ;
             sh:path <urn:cgdl:1.0:endDate> ],
         [ sh:datatype xsd:string ;
-            sh:path <urn:cgdl:1.0:projectName> ],
-        [ sh:datatype xsd:date ;
-            sh:path <urn:cgdl:1.0:startDate> ] ;
+            sh:path <urn:cgdl:1.0:projectName> ] ;
     sh:targetClass <urn:cgdl:1.0:Project> .
 
 [] dcterms:created "2024-06-21"^^xsd:date .

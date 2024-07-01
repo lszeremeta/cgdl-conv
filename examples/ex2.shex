@@ -1,7 +1,7 @@
 PREFIX ex: <http://example.org/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 ex:City {
-  ex:population xsd:int ;
+  ex:population xsd:int {1,};
 }
 ex:Employee {
   ex:reportsTo @ex:Manager {1,1};
