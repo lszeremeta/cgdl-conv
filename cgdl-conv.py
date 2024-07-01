@@ -198,6 +198,7 @@ if args.file:
 
         print(g.serialize(format='turtle'))
     if args.shex:
+        # TODO: Handle no cardinalities the same way for all formats?
         print('PREFIX ex: <http://example.org/>')
         print('PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>')
         for shape in data.get('shapes', []):
@@ -209,14 +210,14 @@ if args.file:
                     if 'minCount' in pred or 'maxCount' in pred:
                         min_count = pred.get('minCount', '')
                         max_count = pred.get('maxCount', '')
-                        cardinality = f"{{{min_count or ''},{max_count or ''}}}"
+                        cardinality = f"{{{min_count},{max_count}}}" if min_count or max_count else ''
                     elif 'cardinality' in pred:
                         cardinality = f"{{{pred['cardinality']}}}"
                     print(f"  ex:{pred['name']} {datatype} {cardinality};")
                 elif 'node' in pred:
                     min_count = pred.get('minCount', '')
                     max_count = pred.get('maxCount', '')
-                    cardinality = f"{{{min_count or ''},{max_count or ''}}}"
+                    cardinality = f"{{{min_count},{max_count}}}" if min_count or max_count else ''
                     print(f"  ex:{pred['name']} @ex:{pred['node']} {cardinality};")
             print("}")
     if args.pgschema:
