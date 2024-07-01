@@ -137,7 +137,7 @@ if args.file:
         xsd = Namespace("http://www.w3.org/2001/XMLSchema#")
 
         def set_datatype(f):
-            return {'string': xsd.string, 'int': xsd.int, 'integer': xsd.integer, 'boolean': xsd.boolean,
+            return {'string': xsd.string, 'int': xsd.integer, 'integer': xsd.integer, 'boolean': xsd.boolean,
                     'decimal': xsd.decimal, 'float': xsd.float, 'double': xsd.double, 'dateTime': xsd.dateTime,
                     'time': xsd.time, 'date': xsd.date, }.get(f)
 
@@ -163,42 +163,39 @@ if args.file:
                 print('# There is no information about target node')
 
             for predicate in shape.get('predicates', []):
-                if 'datatype' in predicate:
-                    prop = BNode()
-                    try:
-                        pn1 = predicate['name']
-                        g.add((shape_ref, sh.property, prop))
-                        g.add((prop, sh.path, URIRef("urn:cgdl:1.0:" + pn1)))
+                prop = BNode()
+                g.add((shape_ref, sh.property, prop))
+                
+                try:
+                    pn1 = predicate['name']
+                    g.add((prop, sh.path, URIRef("urn:cgdl:1.0:" + pn1)))
+                    
+                    if 'datatype' in predicate:
                         pdt1 = set_datatype(predicate.get('datatype'))
                         if pdt1:
                             g.add((prop, sh.datatype, pdt1))
-                        if 'cardinality' in predicate:
-                            g.add((prop, sh.minCount, Literal(predicate['cardinality'], datatype=xsd.integer)))
-                            g.add((prop, sh.maxCount, Literal(predicate['cardinality'], datatype=xsd.integer)))
-                        elif 'minCount' in predicate:
+                    elif 'node' in predicate:
+                        pnd1 = predicate['node']
+                        g.add((prop, sh.node, URIRef("urn:cgdl:1.0:" + pnd1)))
+                    
+                    # Cardinalities
+                    if 'cardinality' in predicate:
+                        g.add((prop, sh.minCount, Literal(predicate['cardinality'], datatype=xsd.integer)))
+                        g.add((prop, sh.maxCount, Literal(predicate['cardinality'], datatype=xsd.integer)))
+                    elif 'minCount' in predicate or 'maxCount' in predicate:
+                        if 'minCount' in predicate:
                             g.add((prop, sh.minCount, Literal(predicate['minCount'], datatype=xsd.integer)))
                         if 'maxCount' in predicate:
                             g.add((prop, sh.maxCount, Literal(predicate['maxCount'], datatype=xsd.integer)))
-                    except KeyError as e:
-                        print(f'# There is no information about property: {e}')
-                else:
-                    prop2 = BNode()
-                    try:
-                        pp1 = predicate['name']
-                        g.add((shape_ref, sh.property, prop2))
-                        g.add((prop2, sh.path, URIRef("urn:cgdl:1.0:" + pp1)))
-                        pnd1 = predicate['node']
-                        g.add((prop2, sh.node, URIRef("urn:cgdl:1.0:" + pnd1)))
-                        if 'minCount' in predicate:
-                            g.add((prop2, sh.minCount, Literal(predicate['minCount'], datatype=xsd.integer)))
-                        if 'maxCount' in predicate:
-                            g.add((prop2, sh.maxCount, Literal(predicate['maxCount'], datatype=xsd.integer)))
-                    except KeyError as e:
-                        print(f'# There is no information about edge: {e}')
+                    else:
+                        # If no cardinality specified, set minCount and maxCount to 1
+                        g.add((prop, sh.minCount, Literal(1, datatype=xsd.integer)))
+                        g.add((prop, sh.maxCount, Literal(1, datatype=xsd.integer)))
+                except KeyError as e:
+                    print(f'# There is no information about property: {e}')
 
         print(g.serialize(format='turtle'))
     if args.shex:
-        # TODO: Handle no cardinalities the same way for all formats?
         print('PREFIX ex: <http://example.org/>')
         print('PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>')
         for shape in data.get('shapes', []):

@@ -3,7 +3,9 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <urn:cgdl:1.0:MovieShape> a sh:NodeShape ;
-    sh:property [ sh:datatype xsd:int ;
+    sh:property [ sh:datatype xsd:integer ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
             sh:path <urn:cgdl:1.0:released> ],
         [ sh:datatype xsd:string ;
             sh:maxCount 1 ;
@@ -12,14 +14,18 @@
     sh:targetClass <urn:cgdl:1.0:Movie> .
 
 <urn:cgdl:1.0:PersonShape> a sh:NodeShape ;
-    sh:property [ sh:datatype xsd:int ;
-            sh:path <urn:cgdl:1.0:born> ],
-        [ sh:datatype xsd:string ;
+    sh:property [ sh:datatype xsd:string ;
             sh:maxCount 1 ;
             sh:minCount 1 ;
             sh:path <urn:cgdl:1.0:name> ],
-        [ sh:node <urn:cgdl:1.0:Movie> ;
-            sh:path <urn:cgdl:1.0:ACTED_IN> ] ;
+        [ sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:node <urn:cgdl:1.0:Movie> ;
+            sh:path <urn:cgdl:1.0:ACTED_IN> ],
+        [ sh:datatype xsd:integer ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:path <urn:cgdl:1.0:born> ] ;
     sh:targetClass <urn:cgdl:1.0:Person> .
 
 [] dcterms:created "2018-11-13"^^xsd:date ;
