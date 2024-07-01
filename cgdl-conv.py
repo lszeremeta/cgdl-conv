@@ -78,24 +78,21 @@ if args.file:
     if args.cgdl:
         print(raw)
     if args.graphql:
-        datatypes = {
-            'string': 'String', 'int': 'Int', 'integer': 'Int', 'boolean': 'Boolean',
-            'decimal': 'Float', 'float': 'Float', 'double': 'Float',
-            'dateTime': 'String', 'time': 'String', 'date': 'String'
-        }
+        datatypes = {'string': 'String', 'int': 'Int', 'integer': 'Int', 'boolean': 'Boolean', 'decimal': 'Float',
+            'float': 'Float', 'double': 'Float', 'dateTime': 'String', 'time': 'String', 'date': 'String'}
 
         for shape in data.get('shapes', []):
             print(f"type {shape['target']} {{")
             for predicate in shape.get('predicates', []):
                 name = predicate['name']
                 type = datatypes.get(predicate.get('datatype'), predicate.get('node', 'String'))
-                
+
                 if predicate.get('maxCount', 1) != 1:
                     type = f'[{type}]'
-                
+
                 if predicate.get('minCount', 1) != 0:
                     type += '!'
-                
+
                 print(f"  {name}: {type}")
             print("}\n")
     if args.shacl:
@@ -106,10 +103,12 @@ if args.file:
         pg = Namespace("urn:cgdl:1.0:")
         xsd = Namespace("http://www.w3.org/2001/XMLSchema#")
 
+
         def set_datatype(f):
             return {'string': xsd.string, 'int': xsd.integer, 'integer': xsd.integer, 'boolean': xsd.boolean,
                     'decimal': xsd.decimal, 'float': xsd.float, 'double': xsd.double, 'dateTime': xsd.dateTime,
                     'time': xsd.time, 'date': xsd.date, }.get(f)
+
 
         try:
             created = data['metadata']['created']
@@ -135,11 +134,11 @@ if args.file:
             for predicate in shape.get('predicates', []):
                 prop = BNode()
                 g.add((shape_ref, sh.property, prop))
-                
+
                 try:
                     pn1 = predicate['name']
                     g.add((prop, sh.path, URIRef("urn:cgdl:1.0:" + pn1)))
-                    
+
                     if 'datatype' in predicate:
                         pdt1 = set_datatype(predicate.get('datatype'))
                         if pdt1:
@@ -147,7 +146,7 @@ if args.file:
                     elif 'node' in predicate:
                         pnd1 = predicate['node']
                         g.add((prop, sh.node, URIRef("urn:cgdl:1.0:" + pnd1)))
-                    
+
                     # Cardinalities
                     if 'cardinality' in predicate:
                         g.add((prop, sh.minCount, Literal(predicate['cardinality'], datatype=xsd.integer)))
@@ -211,7 +210,8 @@ if args.file:
                         edge_name = predicate.get('name')
                         target_node = predicate.get('node')
                         edge_type_name = edge_name.replace("_", "") + "Type"
-                        print(f"CREATE EDGE TYPE (:{source_node}Type)-[{edge_type_name}: {edge_name}]->(:{target_node}Type)")
+                        print(
+                            f"CREATE EDGE TYPE (:{source_node}Type)-[{edge_type_name}: {edge_name}]->(:{target_node}Type)")
 
         for shape in data.get('shapes', []):
             source_node = shape.get('target')
@@ -222,9 +222,9 @@ if args.file:
                         target_node = predicate.get('node')
                         min_count = predicate.get('minCount', 1)
                         max_count = predicate.get('maxCount', '')
-                        
+
                         cardinality = f"{min_count}..{max_count}" if max_count else f"{min_count}.."
-                        
+
                         print(f"FOR (c: {source_node}Type)")
                         print(f"COUNT {cardinality} OF t WITHIN (c)-[:{edge_name}]->(t: {target_node}Type).")
 
@@ -237,7 +237,7 @@ if args.file:
                         cardinality = predicate.get('cardinality', 1)
                         min_count = predicate.get('minCount', cardinality)
                         max_count = predicate.get('maxCount', cardinality)
-                        
+
                         if min_count or max_count:
                             cardinality = f"{min_count}..{max_count}" if max_count != min_count else f"{min_count}"
                             print(f"FOR (c: {source_node}Type)")
