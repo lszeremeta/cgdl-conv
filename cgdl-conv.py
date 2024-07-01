@@ -78,55 +78,25 @@ if args.file:
     if args.cgdl:
         print(raw)
     if args.graphql:
-        indentation = '  '
-
-        def set_datatype(f):
-            return {
-                'string': 'String',
-                'int': 'Int',
-                'integer': 'Int',
-                'boolean': 'Boolean',
-                'decimal': 'Float',
-                'float': 'Float',
-                'double': 'Float',
-                'dateTime': 'String',
-                'time': 'String',
-                'date': 'String'
-            }.get(f, 'String')
+        datatypes = {
+            'string': 'String', 'int': 'Int', 'integer': 'Int', 'boolean': 'Boolean',
+            'decimal': 'Float', 'float': 'Float', 'double': 'Float',
+            'dateTime': 'String', 'time': 'String', 'date': 'String'
+        }
 
         for shape in data.get('shapes', []):
             print(f"type {shape['target']} {{")
             for predicate in shape.get('predicates', []):
-                if 'datatype' in predicate:
-                    pn1 = predicate['name']
-                    pdt1 = set_datatype(predicate['datatype'])
-                    cardinality = ''
-                    if 'minCount' in predicate or 'maxCount' in predicate:
-                        min_count = predicate.get('minCount', 0)
-                        max_count = predicate.get('maxCount', '')
-                        if min_count == 0:
-                            cardinality = ''
-                        elif min_count == 1 and not max_count:
-                            cardinality = '!'
-                        else:
-                            cardinality = '!'  # Required by default
-                    elif 'cardinality' in predicate:
-                        cardinality = '!' if predicate['cardinality'] > 0 else ''
-                    print(f"{indentation}{pn1}: {pdt1}{cardinality}")
-                else:
-                    pp1 = predicate['name']
-                    pnd1 = predicate['node']
-                    cardinality = ''
-                    if 'minCount' in predicate or 'maxCount' in predicate:
-                        min_count = predicate.get('minCount', 0)
-                        max_count = predicate.get('maxCount', '')
-                        if min_count == 0 and not max_count:
-                            cardinality = ''
-                        elif min_count == 1 and max_count == 1:
-                            cardinality = '!'
-                        else:
-                            cardinality = '!'  # Required by default
-                    print(f"{indentation}{pp1}: [{pnd1}]{cardinality}")
+                name = predicate['name']
+                type = datatypes.get(predicate.get('datatype'), predicate.get('node', 'String'))
+                
+                if predicate.get('maxCount', 1) != 1:
+                    type = f'[{type}]'
+                
+                if predicate.get('minCount', 1) != 0:
+                    type += '!'
+                
+                print(f"  {name}: {type}")
             print("}\n")
     if args.shacl:
         g = Graph()
